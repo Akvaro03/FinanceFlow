@@ -89,17 +89,18 @@
 ## API Endpoints
 
 ### Authentication
-- **Register a new user**.
-- **Authenticate** and retrieve a JWT token.
+- **POST /api/auth/register** - Register a new user.
+- **POST /api/auth/login** - Authenticate and retrieve a JWT token.
 
 ### Transactions
-- **Retrieve all transactions** for the logged-in user.
-- **Add a new transaction**.
-- **Update an existing transaction**.
-- **Delete a transaction**.
+- **GET /api/transactions** - Retrieve all transactions for the logged-in user.
+- **POST /api/transactions** - Add a new transaction.
+- **PUT /api/transactions/{id}** - Update an existing transaction.
+- **DELETE /api/transactions/{id}** - Delete a transaction. 
 
 ### Reports
-- **Generate a financial report** for a specified date range.
+
+- **GET /api/reports** - For a specified date range.
 
 ---
 
@@ -121,12 +122,7 @@ Contributions are welcome! To contribute:
 
 ---
 
-## License
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
-
----
 
 ## Contact
 For any inquiries or support, please contact:
-- **Email**: developer@financeflow.com
-- **GitHub Issues**: [FinanceFlow Issues](https://github.com/username/FinanceFlow/issues)
+- **Email**: alvaroballarini03@gmail.com
