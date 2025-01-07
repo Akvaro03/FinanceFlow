@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "bI+5vy3ATjaC8AK5x1WppLRJ0erqzouBqNREsYMeZv/I6rF+8dixfLHEiitUKqlV4z/BVmJuO/xqjXethwTsvA==",
+  "dgSpecHash": "oBkK9X2MDBuGdrIPfTW9Qh97hrvJCh183/MtEDcSdWsyx2FKkFszuFevVkJLovopbXRlDd23wNI9XdDjKtkwZg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Consultar SRL\\Desktop\\Proyectos Mios\\FinanceFlow\\FinanceFlowApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Consultar SRL\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Consultar SRL\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Consultar SRL\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\Consultar SRL\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
