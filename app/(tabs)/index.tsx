@@ -100,7 +100,11 @@ export default function HomeScreen() {
 
       {/* Acciones rápidas */}
       <View style={styles.accionesContainer}>
-        <Accion icon="savings" text="Ahorros"  onPress={() => router.push("/Saving")}/>
+        <Accion
+          icon="savings"
+          text="Ahorros"
+          onPress={() => router.push("/Saving")}
+        />
         <Accion icon="autorenew" text="Automatizar" />
         <Accion icon="align-vertical-bottom" text="Ver Gastos" />
         <Accion icon="qr-code-scanner" text="Escanear Fotos" />
