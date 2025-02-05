@@ -5,31 +5,18 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import EditBalanceModal from "@/components/EditBalanceModal";
 import { Link, router } from "expo-router";
-// Datos de ejemplo (Movimientos recientes)
-const movimientos = [
-  { id: "1", title: "Pago en Starbucks", amount: "-$500", icon: "local-cafe" },
-  {
-    id: "2",
-    title: "Recarga de celular",
-    amount: "-$1000",
-    icon: "smartphone",
-  },
-  {
-    id: "3",
-    title: "Ingreso de dinero",
-    amount: "+$5000",
-    icon: "account-balance-wallet",
-  },
-];
-
+import typeIconsName from "@/types/typeIconsName";
+import typeTransactionHistory from "@/types/typeTransaction";
+import useGetUser from "@/hooks/useGetUser";
+import CardCustom from "@/components/CardCustom";
 export default function HomeScreen() {
+  const { User, err, loading } = useGetUser();
   const [isViewBalance, setIsViewBalance] = useState<boolean>(false);
   const [isViewAddBalance, setIsViewAddBalance] = useState<boolean>(false);
   const [isViewTakeBalance, setIsViewTakeBalance] = useState<boolean>(false);
@@ -55,32 +42,32 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.userHeader}>
-          <AntDesign name="user" size={24} color="white" />
-          <Text style={styles.userName}>Hola, Alvaro Ballarini</Text>
+          <AntDesign name="user" size={24} color="#FFFFFF" />
+          <Text style={styles.userName}>Hola, {User?.name}</Text>
         </View>
-        <Ionicons name="notifications-outline" size={24} color="white" />
+        <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
       </View>
 
       {/* Balance de la cuenta */}
-      <View style={styles.balanceContainer}>
+      <CardCustom>
         <View style={styles.balanceHeaderContainer}>
           <Text style={styles.balanceHeaderText}>Disponible</Text>
           <View style={styles.balanceButtonContainer}>
-            <Text style={styles.balanceButton}>
-              <Link href={"/History"}>Ir a mis movimientos</Link>
-            </Text>
+            <Link style={styles.balanceButtonText} href={"/History"}>
+              Ir a mis movimientos
+            </Link>
             <AntDesign name="caretright" size={14} color="#00ff99" />
           </View>
         </View>
         <View style={styles.balanceBodyContainer}>
           <Text style={styles.balanceText}>
-            {isViewBalance ? "$40.354" : "******"}
+            {isViewBalance ? `$${User?.balance}` : "******"}
           </Text>
           <TouchableOpacity onPress={changeVisibility}>
             {isViewBalance ? (
-              <Feather name="eye" size={24} color="white" />
+              <Feather name="eye" size={24} color="#FFFFFF" />
             ) : (
-              <Feather name="eye-off" size={24} color="white" />
+              <Feather name="eye-off" size={24} color="#FFFFFF" />
             )}
           </TouchableOpacity>
         </View>
@@ -96,7 +83,7 @@ export default function HomeScreen() {
             onPress={changeTakeBalance}
           />
         </View>
-      </View>
+      </CardCustom>
 
       {/* Acciones rápidas */}
       <View style={styles.accionesContainer}>
@@ -113,8 +100,8 @@ export default function HomeScreen() {
       {/* Lista de Movimientos */}
       <Text style={styles.tituloMovimientos}>Últimos movimientos</Text>
       <FlatList
-        data={movimientos}
-        keyExtractor={(item) => item.id}
+        data={User?.transactions}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <Movimiento item={item} />}
       />
     </SafeAreaView>
@@ -127,20 +114,20 @@ const Accion = ({
   text,
   onPress,
 }: {
-  icon: string;
+  icon: typeIconsName;
   text: string;
   onPress?: () => void;
 }) => (
   <TouchableOpacity style={styles.accion} onPress={onPress}>
-    <MaterialIcons name={icon} size={30} color="white" />
+    <MaterialIcons name={icon} size={22} color="#A0A0A0" />
     <Text style={styles.accionTexto}>{text}</Text>
   </TouchableOpacity>
 );
 
 // Componente de un movimiento en la lista
-const Movimiento = ({ item }) => (
+const Movimiento = ({ item }: { item: typeTransactionHistory }) => (
   <View style={styles.movimiento}>
-    <MaterialIcons name={item.icon} size={24} color="#4F4F4F" />
+    <MaterialIcons name={item.icon} size={24} color="#A0A0A0" />
     <View style={styles.movimientoInfo}>
       <Text style={styles.movimientoTexto}>{item.title}</Text>
       <Text style={styles.movimientoMonto}>{item.amount}</Text>
@@ -149,7 +136,13 @@ const Movimiento = ({ item }) => (
 );
 
 const styles = StyleSheet.create({
-  balanceActions: { display: "flex", flexDirection: "row", width: "100%" },
+  balanceActions: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    paddingVertical: 15,
+    gap: 12,
+  },
   balanceBodyContainer: {
     display: "flex",
     flexDirection: "row",
@@ -174,12 +167,28 @@ const styles = StyleSheet.create({
   balanceContainer: {
     alignItems: "center",
     backgroundColor: "#1e1e1e",
-    padding: 10,
+    padding: 20,
     borderRadius: 10,
   },
-  balanceHeaderText: { fontSize: 12, fontWeight: "bold", color: "white" },
-  balanceText: { fontSize: 25, fontWeight: "bold", color: "white" },
+  balanceHeaderText: {
+    fontFamily: "Inter",
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#A0A0A0",
+  },
+  balanceText: {
+    fontFamily: "Inter",
+    fontSize: 30,
+    fontWeight: "900",
+    color: "#00FF99",
+  },
   balanceButton: { fontSize: 10, fontWeight: "bold", color: "#00ff99" },
+  balanceButtonText: {
+    fontFamily: "Inter",
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#00ff99",
+  },
   userHeader: {
     display: "flex",
     flexDirection: "row",
@@ -190,29 +199,39 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
-  userName: { fontSize: 16, fontWeight: "bold", color: "white" },
+  userName: { fontSize: 18, fontWeight: "600", color: "#FFFFFF" },
   accionesContainer: {
     marginVertical: 20,
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 15,
+    gap: 16,
     columnGap: 30,
   },
   accion: {
     alignItems: "center",
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "rgba(52, 52, 55, 0.46)",
     padding: 10,
     borderRadius: 10,
   },
-  accionTexto: { color: "white", marginTop: 5, fontSize: 14 },
-  tituloMovimientos: { color: "white", fontSize: 18, marginBottom: 10 },
+  accionTexto: {
+    color: "#FFFFFF",
+    marginTop: 5,
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  tituloMovimientos: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 10,
+  },
   movimiento: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 12,
   },
   movimientoInfo: {
     marginLeft: 15,
@@ -220,6 +239,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  movimientoTexto: { color: "white", fontSize: 16 },
+  movimientoTexto: { color: "#FFFFFF", fontSize: 16 },
   movimientoMonto: { color: "#00ff99", fontSize: 16, fontWeight: "bold" },
 });

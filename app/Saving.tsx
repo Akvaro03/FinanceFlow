@@ -1,3 +1,4 @@
+import CardCustom from "@/components/CardCustom";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   FlatList,
@@ -8,13 +9,17 @@ import {
   View,
 } from "react-native";
 const CategoriesExamples: CategoryItemProps[] = [
-  { icon: "arrow-downward", balance: 2000, name: "Traje Spiderman" },
-  { icon: "arrow-downward", balance: 2000, name: "Traje Spiderman" },
-  { icon: "arrow-downward", balance: 2000, name: "Traje Spiderman" },
+  { id: 1, icon: "arrow-forward-ios", balance: 2000, name: "Traje Spiderman" },
+  { id: 2, icon: "arrow-forward-ios", balance: 2000, name: "Traje Spiderman" },
+  { id: 3, icon: "arrow-forward-ios", balance: 2000, name: "Traje Spiderman" },
 ];
 function Savings() {
   return (
     <SafeAreaView style={styles.container}>
+      <CardCustom>
+        <Text style={styles.balanceHeaderText}>Total</Text>
+        <Text style={styles.balanceText}>$40.115</Text>
+      </CardCustom>
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceHeaderText}>Total</Text>
         <Text style={styles.balanceText}>$40.115</Text>
@@ -28,7 +33,7 @@ function Savings() {
       </View>
       <FlatList
         data={CategoriesExamples}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <CategoryItem {...item} />}
         style={styles.CategoriesContainer}
       />
@@ -50,7 +55,7 @@ const ButtonCategories = ({
     style={focus ? styles.buttonCategoryFocus : styles.buttonCategory}
   >
     <MaterialIcons
-      name={"arrow-downward"}
+      name={focus ? "arrow-upward" : "arrow-downward"}
       size={15}
       color={focus ? "#00ff99" : "white"}
     />
@@ -61,24 +66,27 @@ const ButtonCategories = ({
     </Text>
   </TouchableOpacity>
 );
+type CategoryName = "arrow-forward-ios" | "keyboard-arrow-up";
+
 type CategoryItemProps = {
+  id: number;
   name: string;
-  icon: string;
+  icon: CategoryName;
   balance: number;
 };
 const CategoryItem = ({ name, icon, balance }: CategoryItemProps) => (
-  <View style={styles.CategoryItemContainer}>
+  <TouchableOpacity style={styles.CategoryItemContainer}>
     <View style={styles.CategoryItemIcon}>
       <MaterialIcons name={icon} size={15} color="white" />
     </View>
-    <View>
-      <View>
-        <Text>{name}</Text>
-        <MaterialIcons name={"arrow-forward-ios"} size={15} color="white" />
+    <View style={styles.CategoryItemBodyContainer}>
+      <View style={styles.CategoryItemBodyHeader}>
+        <Text style={styles.CategoryItemBodyHeaderText}>{name}</Text>
+        <MaterialIcons name={"arrow-forward-ios"} size={10} color="white" />
       </View>
-      <Text>{balance}</Text>
+      <Text style={styles.CategoryItemBodyBalanceText}>${balance}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
@@ -98,6 +106,7 @@ const styles = StyleSheet.create({
   balanceHeaderText: {
     fontSize: 16,
     color: "grey",
+    fontWeight: "600",
   },
   balanceText: {
     fontSize: 25,
@@ -144,34 +153,56 @@ const styles = StyleSheet.create({
   buttonCategoryText: {
     color: "grey",
     fontSize: 12,
+    fontWeight: "600",
   },
   buttonCategoryTextFocus: {
     color: "#00ff99",
     fontSize: 12,
+    fontWeight: "600",
   },
   CategoriesContainer: {
     display: "flex",
     width: "90%",
-    paddingVertical:20
+    paddingVertical: 20,
   },
   CategoryItemContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    marginVertical:5,
-    borderRadius:8,
+    marginVertical: 5,
+    borderRadius: 8,
     backgroundColor: "#121212",
   },
-  CategoryItemIcon:{
-    display:"flex",
-    justifyContent:"center",
-    width:50,
-    height:50,
-    alignItems:"center",
+  CategoryItemIcon: {
+    display: "flex",
+    justifyContent: "center",
+    width: 50,
+    height: 50,
+    alignItems: "center",
     backgroundColor: "#1e1e1e",
-    borderRadius:100
-  }
+    borderRadius: 100,
+  },
+  CategoryItemBodyContainer: {
+    width: "70%",
+    gap: 5,
+  },
+  CategoryItemBodyHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  CategoryItemBodyHeaderText: {
+    color: "grey",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  CategoryItemBodyBalanceText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "700",
+  },
 });
 
 export default Savings;
