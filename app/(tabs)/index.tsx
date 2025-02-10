@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
@@ -15,9 +16,27 @@ import typeIconsName from "@/types/typeIconsName";
 import typeTransactionHistory from "@/types/typeTransaction";
 import useGetUser from "@/hooks/useGetUser";
 import CardCustom from "@/components/CardCustom";
+import CircleDecorationComponent from "@/components/CircleDecorationComponent";
 export default function HomeScreen() {
   const { User, err, loading } = useGetUser();
   const [isViewBalance, setIsViewBalance] = useState<boolean>(false);
+  const fadeAnim = useRef(new Animated.Value(1)).current; // Control de opacidad
+  useEffect(() => {
+    // Cuando el balance cambia, hacer fade out y luego fade in
+    Animated.sequence([
+      Animated.timing(fadeAnim, {
+        toValue: 0.5,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [User?.balance, isViewBalance]);
+
   const [isViewAddBalance, setIsViewAddBalance] = useState<boolean>(false);
   const [isViewTakeBalance, setIsViewTakeBalance] = useState<boolean>(false);
 
@@ -37,6 +56,15 @@ export default function HomeScreen() {
         visibility={isViewTakeBalance}
         close={changeTakeBalance}
         mode="take"
+      />
+
+      <CircleDecorationComponent
+        size={0.9}
+        positionCircle={{ left: -155, top: -155 }}
+      />
+      <CircleDecorationComponent
+        size={0.9}
+        positionCircle={{ left: 240, top: 300 }}
       />
 
       {/* Header */}
@@ -60,9 +88,10 @@ export default function HomeScreen() {
           </View>
         </View>
         <View style={styles.balanceBodyContainer}>
-          <Text style={styles.balanceText}>
+          <Animated.Text style={[styles.balanceText, { opacity: fadeAnim }]}>
             {isViewBalance ? `$${User?.balance}` : "******"}
-          </Text>
+          </Animated.Text>
+
           <TouchableOpacity onPress={changeVisibility}>
             {isViewBalance ? (
               <Feather name="eye" size={24} color="#FFFFFF" />
@@ -140,7 +169,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    paddingVertical: 15,
     gap: 12,
   },
   balanceBodyContainer: {
@@ -148,8 +176,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     alignItems: "center",
-    paddingHorizontal: 10,
     gap: 10,
+    paddingVertical: 20,
   },
   balanceButtonContainer: {
     display: "flex",
@@ -162,7 +190,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
-    paddingHorizontal: 10,
   },
   balanceContainer: {
     alignItems: "center",
@@ -203,7 +230,7 @@ const styles = StyleSheet.create({
   },
   userName: { fontSize: 18, fontWeight: "600", color: "#FFFFFF" },
   accionesContainer: {
-    marginVertical: 20,
+    marginBottom: 20,
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",

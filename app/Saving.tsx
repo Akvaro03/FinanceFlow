@@ -1,4 +1,6 @@
 import CardCustom from "@/components/CardCustom";
+import CircleAnimationComponent from "@/components/CircleAnimationComponent";
+import typeIconsName from "@/types/typeIconsName";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   FlatList,
@@ -16,14 +18,11 @@ const CategoriesExamples: CategoryItemProps[] = [
 function Savings() {
   return (
     <SafeAreaView style={styles.container}>
-      <CardCustom>
+      <CircleAnimationComponent size={"large"} />
+      <CardCustom style={{ width: "90%", paddingVertical: 30 }}>
         <Text style={styles.balanceHeaderText}>Total</Text>
         <Text style={styles.balanceText}>$40.115</Text>
       </CardCustom>
-      <View style={styles.balanceContainer}>
-        <Text style={styles.balanceHeaderText}>Total</Text>
-        <Text style={styles.balanceText}>$40.115</Text>
-      </View>
       <View style={styles.headerCategories}>
         <Text style={styles.headerCategoriesText}>Tus reservas</Text>
         <View style={styles.buttonsContainer}>
@@ -66,12 +65,11 @@ const ButtonCategories = ({
     </Text>
   </TouchableOpacity>
 );
-type CategoryName = "arrow-forward-ios" | "keyboard-arrow-up";
 
 type CategoryItemProps = {
   id: number;
   name: string;
-  icon: CategoryName;
+  icon: typeIconsName;
   balance: number;
 };
 const CategoryItem = ({ name, icon, balance }: CategoryItemProps) => (
@@ -93,15 +91,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: "#1e1e1e",
-    alignItems: "center",
-  },
-  balanceContainer: {
-    width: "90%",
-    marginVertical: 20,
     backgroundColor: "#121212",
-    padding: 10,
-    borderRadius: 10,
+    alignItems: "center",
+    overflow: "hidden",
   },
   balanceHeaderText: {
     fontSize: 16,
@@ -109,9 +101,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   balanceText: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "bold",
-    color: "white",
+    color: "#00ff99",
   },
   headerCategories: {
     width: "90%",
@@ -136,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
     borderRadius: 7,
-    backgroundColor: "#121212",
+    backgroundColor: "#1e1e1e",
     padding: 7,
     paddingHorizontal: 8,
   },
@@ -153,12 +145,12 @@ const styles = StyleSheet.create({
   buttonCategoryText: {
     color: "grey",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   buttonCategoryTextFocus: {
     color: "#00ff99",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   CategoriesContainer: {
     display: "flex",
@@ -170,9 +162,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 7,
     borderRadius: 8,
-    backgroundColor: "#121212",
+    backgroundColor: "#1e1e1e",
   },
   CategoryItemIcon: {
     display: "flex",
@@ -180,7 +172,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     alignItems: "center",
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#121212",
     borderRadius: 100,
   },
   CategoryItemBodyContainer: {
