@@ -8,9 +8,17 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useAuth } from "../context/authContext";
+import LoginPage from "../LoginPage";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { user, loading } = useAuth();
+  console.log(user);
+  console.log(loading);
+  if (!user && !loading) {
+    return <LoginPage />;
+  }
 
   return (
     <Tabs

@@ -10,12 +10,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "./context/authContext";
 const CategoriesExamples: CategoryItemProps[] = [
   { id: 1, icon: "arrow-forward-ios", balance: 2000, name: "Traje Spiderman" },
   { id: 2, icon: "arrow-forward-ios", balance: 2000, name: "Traje Spiderman" },
   { id: 3, icon: "arrow-forward-ios", balance: 2000, name: "Traje Spiderman" },
 ];
 function Savings() {
+  const { user, login, logout, loading } = useAuth();
+  console.log(user);
+  console.log(login);
   return (
     <SafeAreaView style={styles.container}>
       <CircleAnimationComponent size={"large"} />
