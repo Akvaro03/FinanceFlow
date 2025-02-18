@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
+import { Picker } from "@react-native-picker/picker";
+import { useState } from "react";
+import { useAuth } from "@/app/context/authContext";
 function EditBalanceModal({
   visibility,
   close,
@@ -14,14 +16,28 @@ function EditBalanceModal({
 }: {
   visibility: boolean;
   close: () => void;
-  mode: "add" | "take";
+  mode: "income" | "expense";
 }) {
-  return (
+  const [selectedLanguage, setSelectedLanguage] = useState();
+    const { addTransaction } = useAuth();
+
+    const handleAddTransaction = async () => {
+      await addTransaction({
+        amount: 100,
+        type: mode,
+        category: "Comida",
+        paymentMethod: "Tarjeta",
+        date: new Date(),
+        description: "Cena en restaurante",
+      });
+    };
+
+    return (
     <Modal visible={visibility} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>
-            {mode === "add" ? "Agregar Balance" : "Retirar Balance"}
+            {mode === "income" ? "Agregar gasto" : "Retirar Balance"}
           </Text>
 
           <TextInput
@@ -30,13 +46,22 @@ function EditBalanceModal({
             inputMode="numeric"
             placeholderTextColor="#999"
           />
+          <Picker
+            selectedValue={selectedLanguage}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedLanguage(itemValue)
+            }
+          >
+            <Picker.Item label="Java" value="java" />
+            <Picker.Item label="JavaScript" value="js" />
+          </Picker>
 
           {/* Botones de acción */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={close}>
               <Text style={styles.buttonText}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.submitButton}>
+            <TouchableOpacity onPress={handleAddTransaction} style={styles.submitButton}>
               <Text style={styles.buttonSaveText}>Guardar</Text>
             </TouchableOpacity>
           </View>

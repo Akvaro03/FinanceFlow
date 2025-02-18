@@ -19,18 +19,21 @@ function useGetUser() {
           title: "Pago en Starbucks",
           amount: "-$500",
           icon: "local-cafe",
+          paymentMethods: { icon: "savings", name: "Efectivo" },
         },
         {
           id: 2,
           title: "Recarga de celular",
           amount: "-$1000",
           icon: "smartphone",
+          paymentMethods: { icon: "savings", name: "Efectivo" },
         },
         {
           id: 3,
           title: "Ingreso de dinero",
           amount: "+$5000",
           icon: "account-balance-wallet",
+          paymentMethods: { icon: "savings", name: "Efectivo" },
         },
       ],
     };

@@ -7,18 +7,22 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
-import EditBalanceModal from "@/components/EditBalanceModal";
-import { Link, router } from "expo-router";
-import typeIconsName from "@/types/typeIconsName";
-import typeTransactionHistory from "@/types/typeTransaction";
-import useGetUser from "@/hooks/useGetUser";
-import CardCustom from "@/components/CardCustom";
 import CircleDecorationComponent from "@/components/CircleDecorationComponent";
+import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import EditBalanceModal from "@/components/EditBalanceModal";
+import typeTransactionHistory from "@/types/typeTransaction";
+import TextBalance from "@/components/TextBalance";
+import typeIconsName from "@/types/typeIconsName";
+import Feather from "@expo/vector-icons/Feather";
+import CardCustom from "@/components/CardCustom";
+import { useAuth } from "../context/authContext";
+import useGetUser from "@/hooks/useGetUser";
+import { Link, router } from "expo-router";
 export default function HomeScreen() {
-  const { User, err, loading } = useGetUser();
+  const { user, loading, addTransaction } = useAuth();
+  const { User, err } = useGetUser();
+
   const [isViewBalance, setIsViewBalance] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(1)).current; // Control de opacidad
   useEffect(() => {
@@ -35,27 +39,25 @@ export default function HomeScreen() {
         useNativeDriver: true,
       }),
     ]).start();
-  }, [User?.balance, isViewBalance]);
-
+  }, [user?.balance, isViewBalance]);
   const [isViewAddBalance, setIsViewAddBalance] = useState<boolean>(false);
   const [isViewTakeBalance, setIsViewTakeBalance] = useState<boolean>(false);
 
   const changeVisibility = () => setIsViewBalance(!isViewBalance);
   const changeAddBalance = () => setIsViewAddBalance(!isViewAddBalance);
   const changeTakeBalance = () => setIsViewTakeBalance(!isViewTakeBalance);
-
   return (
     <SafeAreaView style={styles.container}>
       {/* Modals */}
       <EditBalanceModal
         visibility={isViewAddBalance}
         close={changeAddBalance}
-        mode="add"
+        mode="income"
       />
       <EditBalanceModal
         visibility={isViewTakeBalance}
         close={changeTakeBalance}
-        mode="take"
+        mode="expense"
       />
 
       <CircleDecorationComponent
@@ -89,7 +91,7 @@ export default function HomeScreen() {
         </View>
         <View style={styles.balanceBodyContainer}>
           <Animated.Text style={[styles.balanceText, { opacity: fadeAnim }]}>
-            {isViewBalance ? `$${User?.balance}` : "******"}
+            {isViewBalance ? `$${user?.balance}` : "******"}
           </Animated.Text>
 
           <TouchableOpacity onPress={changeVisibility}>
@@ -103,7 +105,7 @@ export default function HomeScreen() {
         <View style={styles.balanceActions}>
           <Accion
             icon={"arrow-upward"}
-            text={"Agregar"}
+            text={"Agregar gasto"}
             onPress={changeAddBalance}
           />
           <Accion
@@ -159,7 +161,14 @@ const Movimiento = ({ item }: { item: typeTransactionHistory }) => (
     <MaterialIcons name={item.icon} size={24} color="#A0A0A0" />
     <View style={styles.movimientoInfo}>
       <Text style={styles.movimientoTexto}>{item.title}</Text>
-      <Text style={styles.movimientoMonto}>{item.amount}</Text>
+      <View style={styles.movimientoContainer}>
+        <TextBalance style={styles.movimientoMonto}>{item.amount}</TextBalance>
+        <MaterialIcons
+          name={item.paymentMethods.icon}
+          size={24}
+          color="#00ff99"
+        />
+      </View>
     </View>
   </View>
 );
@@ -260,6 +269,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
   },
+  movimientoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 4,
+  },
   movimientoInfo: {
     marginLeft: 15,
     flex: 1,
@@ -267,5 +281,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   movimientoTexto: { color: "#FFFFFF", fontSize: 16 },
-  movimientoMonto: { color: "#00ff99", fontSize: 16, fontWeight: "bold" },
+  movimientoMethods: { color: "#FFFFFF", fontSize: 16 },
+  movimientoMonto: { fontSize: 16, fontWeight: "bold" },
 });

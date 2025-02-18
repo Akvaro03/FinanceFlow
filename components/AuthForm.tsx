@@ -16,35 +16,40 @@ interface AuthFormInterface {
 function AuthForm({ mode, onSubmit, toggleMode }: AuthFormInterface) {
   const isLogin = mode === "login";
   const [email, setEmail] = useState("");
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
-    <View>
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor={"#bbb"}
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Contraseña"
-        placeholderTextColor={"#bbb"}
-        value={password}
-        onChangeText={setpassword}
-        secureTextEntry
-      />
-      {!isLogin && (
+    <View style={styles.containerForm}>
+      <Text style={styles.titleText}>
+        {isLogin ? "Iniciar Sesión" : "Registrarse"}
+      </Text>
+      <View>
         <TextInput
-          placeholder="Confirmar Contraseña"
+          placeholder="Email"
           placeholderTextColor={"#bbb"}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TextInput
+          placeholder="Contraseña"
+          placeholderTextColor={"#bbb"}
+          value={password}
+          onChangeText={setPassword}
           secureTextEntry
         />
-      )}
+        {!isLogin && (
+          <TextInput
+            placeholder="Confirmar Contraseña"
+            placeholderTextColor={"#bbb"}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+        )}
+      </View>
       <TouchableOpacity
         style={styles.button}
         onPress={() => onSubmit(email, password, confirmPassword)}
@@ -75,11 +80,13 @@ const styles = StyleSheet.create({
   containerForm: {
     width: "85%",
     backgroundColor: "#1F2937",
+    height: "50%",
     padding: 20,
     borderRadius: 10,
     borderColor: "#00ff99",
     borderWidth: 2,
     alignItems: "center",
+    justifyContent: "space-between",
   },
   titleText: {
     color: "#00ff99",

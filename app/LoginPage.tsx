@@ -1,10 +1,30 @@
 import AuthForm from "@/components/AuthForm";
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { useAuth } from "./context/authContext";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebaseConfig";
+import { useState } from "react";
 
 function LoginPage() {
+  const [mode, setMode] = useState<"register" | "login">("register");
+  const { register } = useAuth();
+  const handleRegister = async (
+    email: string,
+    password: string,
+    confirmPassword: string
+  ) => {
+    register(email, password);
+  };
+  const toggleMode = () =>{
+    setMode(() =>(mode === "register" ? "login" : "register"))
+  }
   return (
     <SafeAreaView style={styles.container}>
-      <AuthForm mode="login"/>
+      <AuthForm
+        onSubmit={handleRegister}
+        toggleMode={toggleMode}
+        mode={mode}
+      />
     </SafeAreaView>
   );
 }
@@ -39,9 +59,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
-  FormUser:{
-    height:"50%"
-  }
+  FormUser: {
+    height: "50%",
+  },
 });
 
 export default LoginPage;
