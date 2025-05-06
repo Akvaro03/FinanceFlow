@@ -15,45 +15,112 @@ interface AuthFormInterface {
 
 function AuthForm({ mode, onSubmit, toggleMode }: AuthFormInterface) {
   const isLogin = mode === "login";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (key: keyof typeof form, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
+
+  const validate = () => {
+    let valid = true;
+    const newErrors = { email: "", password: "", confirmPassword: "" };
+
+    if (!form.email.includes("@")) {
+      newErrors.email = "Email inválido";
+      valid = false;
+    }
+
+    if (form.password.length < 6) {
+      newErrors.password = "Mínimo 6 caracteres";
+      valid = false;
+    }
+
+    if (!isLogin && form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = "Las contraseñas no coinciden";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = () => {
+    if (validate()) {
+      onSubmit(form.email, form.password, form.confirmPassword);
+    }
+  };
 
   return (
     <View style={styles.containerForm}>
       <Text style={styles.titleText}>
         {isLogin ? "Iniciar Sesión" : "Registrarse"}
       </Text>
-      <View>
+
+      {/* Campo Email */}
+      <View style={styles.inputContainer}>
         <TextInput
+          style={[styles.input, errors.email && styles.inputError]}
           placeholder="Email"
-          placeholderTextColor={"#bbb"}
-          value={email}
-          onChangeText={setEmail}
+          placeholderTextColor="#888"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={form.email}
+          onChangeText={(text) => handleChange("email", text)}
+          textContentType="emailAddress"
         />
-        <TextInput
-          placeholder="Contraseña"
-          placeholderTextColor={"#bbb"}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        {!isLogin && (
-          <TextInput
-            placeholder="Confirmar Contraseña"
-            placeholderTextColor={"#bbb"}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-          />
+        {errors.email !== "" && (
+          <Text style={styles.errorText}>{errors.email}</Text>
         )}
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => onSubmit(email, password, confirmPassword)}
-      >
+
+      {/* Campo Contraseña */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, errors.password && styles.inputError]}
+          placeholder="Contraseña"
+          placeholderTextColor="#888"
+          secureTextEntry
+          value={form.password}
+          onChangeText={(text) => handleChange("password", text)}
+          textContentType="password"
+        />
+        {errors.password !== "" && (
+          <Text style={styles.errorText}>{errors.password}</Text>
+        )}
+      </View>
+
+      {/* Confirmar contraseña solo si no es login */}
+      {!isLogin && (
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[
+              styles.input,
+              errors.confirmPassword && styles.inputError,
+            ]}
+            placeholder="Confirmar Contraseña"
+            placeholderTextColor="#888"
+            secureTextEntry
+            value={form.confirmPassword}
+            onChangeText={(text) => handleChange("confirmPassword", text)}
+            textContentType="password"
+          />
+          {errors.confirmPassword !== "" && (
+            <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+          )}
+        </View>
+      )}
+
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>
           {isLogin ? "Ingresar" : "Registrarse"}
         </Text>
@@ -69,46 +136,56 @@ function AuthForm({ mode, onSubmit, toggleMode }: AuthFormInterface) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#121212",
-    padding: 20,
-  },
   containerForm: {
-    width: "85%",
-    backgroundColor: "#1F2937",
-    height: "50%",
-    padding: 20,
-    borderRadius: 10,
+    width: "90%",
+    backgroundColor: "#1f1f1f",
+    padding: 24,
+    borderRadius: 16,
     borderColor: "#00ff99",
-    borderWidth: 2,
+    borderWidth: 1.5,
     alignItems: "center",
-    justifyContent: "space-between",
+    shadowColor: "#00ff99",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
   titleText: {
     color: "#00ff99",
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 24,
+  },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 14,
   },
   input: {
-    width: "100%",
-    backgroundColor: "#333",
+    backgroundColor: "#2b2b2b",
     color: "#fff",
-    padding: 10,
-    marginVertical: 8,
-    borderRadius: 5,
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#444",
+    fontSize: 16,
+  },
+  inputError: {
+    borderColor: "#ff4d4d",
+  },
+  errorText: {
+    color: "#ff4d4d",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
   },
   button: {
     backgroundColor: "#00ff99",
-    paddingVertical: 12,
+    paddingVertical: 14,
     width: "100%",
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 8,
   },
   buttonText: {
     color: "#121212",
@@ -116,8 +193,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   switchText: {
-    color: "#bbb",
-    marginTop: 15,
+    color: "#aaa",
+    marginTop: 18,
     textDecorationLine: "underline",
   },
 });
