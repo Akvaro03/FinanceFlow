@@ -105,12 +105,12 @@ export default function HomeScreen() {
         <View style={styles.balanceActions}>
           <Accion
             icon={"arrow-upward"}
-            text={"Agregar gasto"}
+            text={"Agregar Dinero"}
             onPress={changeAddBalance}
           />
           <Accion
             icon={"arrow-downward"}
-            text={"Retirar"}
+            text={"Agregar Gasto"}
             onPress={changeTakeBalance}
           />
         </View>
